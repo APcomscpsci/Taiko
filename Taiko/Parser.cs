@@ -68,7 +68,11 @@ namespace Taiko
 
                 else if (isMeasures == true)
                 {
-                    if (lines[i].Equals("#GOGOSTART"))
+                    
+
+                    if (lines[i].Equals("")) ;
+
+                    else if (lines[i].Equals("#GOGOSTART"))
                     {
                         readGogo = true;
                     }
@@ -77,6 +81,9 @@ namespace Taiko
                     {
                         readGogo = false;
                     }
+
+
+
 
                     else if (lines[i].Substring(lines[i].Length - 1).Equals(","))
                     {

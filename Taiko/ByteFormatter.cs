@@ -19,8 +19,14 @@ namespace Taiko
             s += "BF FF FF FF";//1C4-1C7 Each BAD(不可)'s earned Tamasii value (Hex). (It's a negative number. Negative number in Hex should be FFFFFFxx.)
             s += "00 00 01 00 00 00 01 00 00 00 01 00 14 00 00 00 0A 00 00 00 00 00 00 00 01 00 00 00 14 00 00 00 0A 00 00 00 01 00 00 00 1E 00 00 00 1E 00 00 00 00 00 00 00";
             s += "E8 DA 37 00"; //1FC-1FF It used to be filled with Max Score value, but it's unused in current platforms.
-            s += intToHexString(song.getMeasures().Count())+""+"000000";  // Total amount of Bars (Hex).200-203
-            
+
+            String flippedByte = intToHexString(song.getMeasures().Count()).PadLeft(4, '0');
+            flippedByte = intToHexString(song.getMeasures().Count()).PadLeft(4, '0').Substring(2) + intToHexString(song.getMeasures().Count()).PadLeft(4, '0').Substring(0, 2);
+
+            s += flippedByte + "00 00";   // Total amount of Bars (Hex).200-203
+            Console.Write(intToHexString(10).PadLeft(4, '0').Substring(2) + intToHexString(10).PadLeft(4, '0').Substring(0, 2));
+
+            Console.WriteLine(song.getMeasures().Count());
             s += "56 37 40 00"; //noone knows what dis does 204-207
 
             for (int i = 0; i < song.getMeasures().Count; i++)
@@ -66,7 +72,8 @@ namespace Taiko
             s += "F4 FC 12 00";
 
             s += intToHexString(notesCount) + "00 00 00"; //adds notecount of measure
-           
+
+
             s += "00 00 80 3F";//hiSpeed, I'll deal with this later
 
             String noteHex = "";
@@ -111,7 +118,7 @@ namespace Taiko
                     case 7: //ballooon
                         noteHex += "0A 00 00 00" + floatToHexString(calculateNoteOffset(currentMeasure, i)) + "00 00 00 00 00 00 00 00";
                         noteHex += intToHexString(note.getBalloonSize()) + "00 00 00"; //balloon size
-                        Console.Write(intToHexString(note.getBalloonSize()) + "00 00 00");
+                        
                         noteHex += floatToHexString(calculateNoteOffset(currentMeasure, note.getBalloonLength()));
                         break;
                 }
@@ -161,7 +168,7 @@ namespace Taiko
             return floatToHexString(song.getBPM());
         }
 
-        public static string intToHexString(int i)
+        public static string intToHexString(int i) //convert int to little endian hex string
         {
             string r = i.ToString("X");
 
@@ -173,5 +180,13 @@ namespace Taiko
             }
             return r;
         }
+
+        public static string Reverse(string s)
+        {
+            char[] charArray = s.ToCharArray();
+            Array.Reverse(charArray);
+            return new string(charArray);
+        }
+
     }
 }

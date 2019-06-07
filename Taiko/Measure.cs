@@ -14,19 +14,31 @@ namespace  Taiko
 
         private bool isGogo;
 
+        private float hs;
+
         private float BPM;
 
-        public Measure(String line, bool isGog, float mBPM)
+        public Measure(String line, bool isGog, float mBPM, float currentHs)
         {
             ToNoteArray(Expand(line));
             isGogo = isGog;
             BPM = mBPM;
-
+            hs = currentHs;
         }
 
         public Measure()
         {
 
+        }
+
+        public void setHs(float x)
+        {
+            hs = x;
+        }
+
+        public float getHs()
+        {
+            return hs;
         }
 
         public float getBPM()

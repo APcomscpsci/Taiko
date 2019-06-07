@@ -12,27 +12,38 @@ namespace Taiko
     {
         static void Main(string[] args)
         {
+            while (true) {
 
-            Chart song = Parser.Parse("C:\\Users\\Sehun Joo\\Desktop\\tja3ds\\freed\\fd.tja");
+                string val;
 
-            byte[] b = ByteWriter.StringToByteArray(ByteFormatter.buildHexString(song));
-
-            for (int i = 0; i < b.Length; i++)
-            {
                 
+                Console.WriteLine("Enter file path of tja, no quotes at the end or beginning pls");
+                val = Console.ReadLine();
+
+                string val2;
+                Console.WriteLine("Enter file path of output file");
+                val2 = Console.ReadLine();
+
+                val = val.Replace("\\", "\\\\");
+                val2 = val2.Replace("\\", "\\\\");
+
+                Console.WriteLine(val);
+                Console.WriteLine(val2);
+
+                Chart song = Parser.Parse(val); //inputs
+
+                byte[] b = ByteWriter.StringToByteArray(ByteFormatter.buildHexString(song));
+
+
+                ByteWriter.ByteArrayToFile(val2, b); //outputs
+
+
+
+
+                Console.WriteLine("I think it ran correctly? Press enter to continue");
+                Console.ReadLine();
+
             }
-            
-            
-
-            ByteWriter.ByteArrayToFile("C:\\Users\\Sehun Joo\\Desktop\\tja3ds\\freed\\out.txt", b);
-
-
-
-
-
-            Console.ReadLine();
-
-            
 
         }
     }

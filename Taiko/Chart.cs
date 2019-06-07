@@ -16,8 +16,8 @@ namespace Taiko
 
         private float BPM;
         private float offset;  
-        private float scoreInit;
-        private float scoreDiff;
+        private int scoreInit;
+        private int scoreDiff;
 
         private int[] balloons;
         private List<Measure> measures; //an arraylist of measures
@@ -53,14 +53,23 @@ namespace Taiko
             return offset;
         }
 
-        public void setScoreInit(double s)
+        public void setScoreInit(int s)
         {
-            scoreInit = (float)s;
+            scoreInit = s;
         }
 
-        public void setScoreDiff(double s)
+        public int getScoreInit()
         {
-            scoreDiff = (float)s;
+            return scoreInit;
+        }
+        public void setScoreDiff(int s)
+        {
+            scoreDiff = s;
+        }
+
+        public int getScoreDiff()
+        {
+            return scoreDiff;
         }
 
         public void setBalloons(int[] b)
@@ -81,6 +90,17 @@ namespace Taiko
         public int[] getBalloons()
         {
             return balloons;
+        }
+
+        public String getBalloonsToString()
+        {
+            String n = "";
+            foreach(int i in balloons)
+            {
+                n += " "+ i;
+            }
+
+            return n;
         }
 
         public override string ToString()

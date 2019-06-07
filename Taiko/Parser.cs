@@ -13,6 +13,8 @@ namespace Taiko
         public static Chart Parse(String fileName)
         {
 
+            Console.WriteLine(fileName);
+
             Chart song = new Chart();
 
             ArrayList unprocessedLines = new ArrayList();
@@ -37,17 +39,17 @@ namespace Taiko
                 }
                 else if (line.Length >= 10 && line.Substring(0, 10).Equals("SCOREINIT:"))
                 {
-                    song.setScoreInit(Double.Parse(line.Substring(10)));
+                    song.setScoreInit(Int32.Parse(line.Substring(10)));
                 }
                 else if (line.Length >= 10 && line.Substring(0, 10).Equals("SCOREDIFF:"))
                 {
-                    song.setScoreDiff(Double.Parse(line.Substring(10)));
+                    song.setScoreDiff(Int32.Parse(line.Substring(10)));
                 } else if (line.Length >= 8 && line.Substring(0, 8).Equals("BALLOON:"))
                 {
                    
                     String[] s = (line.Substring(8).Split(','));
                     int[] b = new int[s.Length];
-                    for(int i = 0; i < s.Length; i++)
+                    for(int i = 0; i < s.Length; i++)//reads in balloons
                     {
 
                         b[i] = Int32.Parse(s[i]);
@@ -60,17 +62,36 @@ namespace Taiko
 
             bool isMeasures = false;
             bool readGogo = false;
+            float currentHs = 1;
+            float currentBPM = song.getBPM();
 
-            for(int i = 0; i < lines.Length; i++)
+            for(int i = 0; i < lines.Length; i++) //reads through array of parsed strings to create measure array
             {
                 if (lines[i].Equals("#END")) break;
 
+                
 
                 else if (isMeasures == true)
                 {
                     
 
                     if (lines[i].Equals("")) ;
+
+                    else if (lines[i].Length>=7 && lines[i].Substring(0, 7).Equals("#SCROLL")) 
+                    {
+                        currentHs = float.Parse(lines[i].Substring(7));
+                    }
+
+
+                    else if (lines[i].Length >= 10 && lines[i].Substring(0, 10).Equals("#BPMCHANGE"))
+                    {
+                        currentBPM = float.Parse(lines[i].Substring(10));
+                    }
+
+                    else if (lines[i].Length >= 4 && lines[i].Substring(0, 4).Equals("#BPM"))
+                    {
+                        currentBPM = float.Parse(lines[i].Substring(4));
+                    }
 
                     else if (lines[i].Equals("#GOGOSTART"))
                     {
@@ -87,7 +108,7 @@ namespace Taiko
 
                     else if (lines[i].Substring(lines[i].Length - 1).Equals(","))
                     {
-                        song.addMeasure(new Measure(lines[i], readGogo, song.getBPM()));
+                        song.addMeasure(new Measure(lines[i], readGogo, currentBPM, currentHs));
                     }
 
 
@@ -154,7 +175,7 @@ namespace Taiko
 
                         }
 
-                        currentMeasure[j].setBalloonLength(balloonLength);
+                        currentMeasure[j].setBalloonLength(balloonLength-1);
 
                     }
 
@@ -188,7 +209,7 @@ namespace Taiko
 
                         }
 
-                        currentMeasure[j].setBalloonLength(balloonLength);
+                        currentMeasure[j].setBalloonLength(balloonLength-1);
 
                     }
 
@@ -208,7 +229,7 @@ namespace Taiko
                                 }
 
 
-                                if (currentlySearchingMeasure[k].getType() == 8)
+                                if (currentlySearchingMeasure[k].getType() == 8)//increments the balloons length until finds the end of balloon
                                 {
                                     d = measures.Count();
                                     break;
@@ -223,6 +244,8 @@ namespace Taiko
                         }
 
                         currentMeasure[j].setBalloonLength(balloonLength);
+                       
+
                         currentMeasure[j].setBalloonSize(chart.getBalloons()[queuedBalloonSize]);
                         queuedBalloonSize++;
                     }

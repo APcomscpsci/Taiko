@@ -8,6 +8,9 @@ namespace Taiko
 {
     class ByteFormatter //this is the class that formatts all the bytes into the String it will become. This is where the magic happens
     {
+        private static float totalMeasureOffset = 0;
+        private static float lengthOfPreviousMeasure = 0;
+
         public static String buildHexString(Chart song)
         {
             string s = "34 33 C8 41 67 26 96 42 22 E2 D8 42 34 33 C8 41 67 26 96 42 22 E2 D8 42 34 33 C8 41 67 26 96 42 22 E2 D8 42 34 33 C8 41 67 26 96 42 22 E2 D8 42 34 33 C8 41 67 26 96 42 22 E2 D8 42 34 33 C8 41 67 26 96 42 22 E2 D8 42 34 33 C8 41 67 26 96 42 22 E2 D8 42 34 33 C8 41 67 26 96 42 22 E2 D8 42 34 33 C8 41 67 26 96 42 22 E2 D8 42 34 33 C8 41 67 26 96 42 22 E2 D8 42 34 33 C8 41 67 26 96 42 22 E2 D8 42 34 33 C8 41 67 26 96 42 22 E2 D8 42 34 33 C8 41 67 26 96 42 22 E2 D8 42 34 33 C8 41 67 26 96 42 22 E2 D8 42 34 33 C8 41 67 26 96 42 22 E2 D8 42 34 33 C8 41 67 26 96 42 22 E2 D8 42 34 33 C8 41 67 26 96 42 22 E2 D8 42 34 33 C8 41 67 26 96 42 22 E2 D8 42 34 33 C8 41 67 26 96 42 22 E2 D8 42 34 33 C8 41 67 26 96 42 22 E2 D8 42 34 33 C8 41 67 26 96 42 22 E2 D8 42 34 33 C8 41 67 26 96 42 22 E2 D8 42 34 33 C8 41 67 26 96 42 22 E2 D8 42 34 33 C8 41 67 26 96 42 22 E2 D8 42 34 33 C8 41 67 26 96 42 22 E2 D8 42 34 33 C8 41 67 26 96 42 22 E2 D8 42 34 33 C8 41 67 26 96 42 22 E2 D8 42 34 33 C8 41 67 26 96 42 22 E2 D8 42 34 33 C8 41 67 26 96 42 22 E2 D8 42 34 33 C8 41 67 26 96 42 22 E2 D8 42 34 33 C8 41 67 26 96 42 22 E2 D8 42 34 33 C8 41 67 26 96 42 22 E2 D8 42 34 33 C8 41 67 26 96 42 22 E2 D8 42 34 33 C8 41 67 26 96 42 22 E2 D8 42 34 33 C8 41 67 26 96 42 22 E2 D8 42 34 33 C8 41 67 26 96 42 22 E2 D8 42";
@@ -55,9 +58,13 @@ namespace Taiko
                 s += "00";
             }
 
-            if (true) //barline status, always true for now
+            if (currentMeasure.getBar()) //barline status, always true for now
             {
                 s += "01";
+            }
+            else
+            {
+                s += "00";
             }
             s += "6C6C"; //Dummy Data?
             s += "FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF"; //usually for split path
@@ -137,8 +144,24 @@ namespace Taiko
 
 
         public static float calculateMeasureOffset(Chart song, int measurePos, Measure measure)  //returns the offset of a measure in float
-        {
-            return song.getOffset() + measurePos * (240000 / measure.getBPM());
+        { //measure pos is the current measure thats being worked on
+            if (measurePos == 0)
+            {
+                totalMeasureOffset += song.getOffset() + (240000 / song.getMeasures()[measurePos].getBPM()) / 2;
+                Console.WriteLine(measure.getBPM() + " " + (240000 / song.getMeasures()[measurePos].getBPM())/2);
+                return song.getOffset();
+            }
+                
+            else
+            {
+                float temp = totalMeasureOffset + (240000 / song.getMeasures()[measurePos].getBPM()) + (240000 / song.getMeasures()[measurePos - 1].getBPM()) / 2;
+                totalMeasureOffset = totalMeasureOffset + (240000 / song.getMeasures()[measurePos].getBPM()) / 2 + (240000 / song.getMeasures()[measurePos-1].getBPM()) / 2;
+                Console.WriteLine(measure.getBPM() + " " + temp);
+                return temp;
+                
+            }
+
+
         }
 
         public static  float calculateNoteOffset(Measure measure, int notePos)  //returns the offset of a note in a measure

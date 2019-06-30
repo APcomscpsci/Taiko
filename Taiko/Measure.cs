@@ -18,12 +18,15 @@ namespace  Taiko
 
         private float BPM;
 
-        public Measure(String line, bool isGog, float mBPM, float currentHs)
+        private bool isBar;
+
+        public Measure(String line, bool isGog, float mBPM, float currentHs, bool isBarr)
         {
             ToNoteArray(Expand(line));
             isGogo = isGog;
             BPM = mBPM;
             hs = currentHs;
+            isBar = isBarr;
         }
 
         public Measure()
@@ -45,6 +48,12 @@ namespace  Taiko
         {
             return BPM;
         }
+
+        public bool getBar()
+        {
+            return isBar;
+        }
+
 
         public static String Expand(String line) //please make sure only measure data is going in, not extraneous things, e.g. timesigchange, gogotime change
         {

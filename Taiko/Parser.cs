@@ -62,6 +62,7 @@ namespace Taiko
 
             bool isMeasures = false;
             bool readGogo = false;
+            bool readBar = true;
             float currentHs = 1;
             float currentBPM = song.getBPM();
 
@@ -103,12 +104,19 @@ namespace Taiko
                         readGogo = false;
                     }
 
+                    else if (lines[i].Equals("#BARLINEOFF"))
+                    {
+                        readBar = false;
+                    }
 
-
+                    else if (lines[i].Equals("#BARLINEON"))
+                    {
+                        readBar = true;
+                    }
 
                     else if (lines[i].Substring(lines[i].Length - 1).Equals(","))
                     {
-                        song.addMeasure(new Measure(lines[i], readGogo, currentBPM, currentHs));
+                        song.addMeasure(new Measure(lines[i], readGogo, currentBPM, currentHs, readBar ));
                     }
 
 
